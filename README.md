@@ -1,67 +1,58 @@
-# Actividad: Diseño de Propuesta de Práctica Temática (Proyecto Pequeño)
+# Pico W + Teclado 4x4 + 12 LEDs (Wokwi)
 
-## Descripción general
-En esta actividad vas a diseñar una propuesta de práctica temática pequeña para GitHub Classroom. El enfoque principal es la **documentación, planeación y estructura del repositorio**, antes de escribir mucho código.
+Proyecto de documentación y organización de firmware para **Raspberry Pi Pico W (RP2040)** basado en un ejemplo de Wokwi.
 
-Tu propuesta debe poder implementarse con uno de estos lenguajes:
-- ARM64 Assembly
-- C
-- Python
-- Bash
+## Resumen
+Este repositorio conserva la lógica original del programa (sin cambios de comportamiento):
+- Lee un teclado matricial 4x4.
+- Enciende/apaga 12 LEDs según la tecla presionada.
+- Mapea teclas numéricas (`0-9`) y especiales (`A-D`, `*`, `#`) a salidas GPIO.
 
-## Objetivo de aprendizaje
-Al finalizar esta actividad, el estudiante podrá:
-- Definir un problema concreto y viable para una práctica pequeña.
-- Justificar la elección de lenguaje según alcance y complejidad.
-- Estructurar un repositorio limpio, claro y mantenible.
-- Documentar caso de uso, alcance y pruebas mínimas.
-- Implementar opcionalmente un prototipo mínimo en terminal.
+## Estructura propuesta (C/C++ Pico SDK)
+```text
+.
+├── CMakeLists.txt
+├── src/
+│   └── main.cpp
+├── include/
+├── docs/
+│   ├── architecture.md
+│   ├── wiring.md
+│   └── source_material.md
+└── README.md
+```
 
-## Lenguajes permitidos
-- ARM64 Assembly
-- C
-- Python
-- Bash
+## Componentes (derivados de `diagram.json`)
+- 1x Raspberry Pi Pico / Pico W (en Wokwi aparece `wokwi-pi-pico`)
+- 1x Teclado de membrana 4x4
+- 12x LED (8 azules + 4 rojos)
+- 12x Resistencias de 220 Ω (serie de LEDs)
+- 4x Resistencias de 1 kΩ (pull-up para filas del teclado)
+- Cableado a GND y 3V3
 
-## Reglas para mantener el proyecto pequeño
-1. El proyecto debe resolverse con una cantidad limitada de funciones y archivos.
-2. No usar frameworks, bases de datos, Docker, nube ni APIs externas.
-3. No instalar dependencias complejas.
-4. Priorizar entradas/salidas por consola y archivos locales sencillos.
-5. Si eliges ARM64 Assembly, limita la solución a programas muy pequeños.
+## Mapa de GPIO principal
+- **Teclado columnas:** GP16, GP17, GP18, GP19
+- **Teclado filas:** GP26, GP22, GP21, GP20
+- **LEDs (12):** GP11, GP10, GP9, GP8, GP7, GP6, GP5, GP4, GP3, GP2, GP28, GP27
 
-## Entregables esperados
-1. `docs/propuesta.md` completo.
-2. `docs/caso_de_uso.md` completo.
-3. `docs/estructura_repositorio.md` revisado y adaptado al proyecto.
-4. `docs/plan_de_pruebas.md` con casos de prueba definidos.
-5. `tests/test_plan.md` con checklist terminado.
-6. Prototipo mínimo opcional en `src/main.<ext>`.
+Detalle completo en `docs/wiring.md`.
 
-## Instrucciones para el estudiante
-1. Lee este `README.md` completo.
-2. Elige un tema pequeño (puedes tomar uno de los ejemplos).
-3. Llena primero `docs/propuesta.md`.
-4. Después llena `docs/caso_de_uso.md` y `docs/plan_de_pruebas.md`.
-5. Ajusta `scripts/run.sh` para tu lenguaje.
-6. Solo cuando tu documentación esté clara, implementa un prototipo mínimo en `src/` (opcional pero recomendable).
-7. Verifica tu checklist final en `tests/test_plan.md`.
-8. Haz commit de tus avances de manera ordenada.
+## Ejecutar en Wokwi
+1. Crea un proyecto nuevo de Raspberry Pi Pico/Pico W.
+2. Copia `src/main.cpp` en el archivo de código del proyecto.
+3. Copia el JSON de `docs/source_material.md` (bloque `diagram.json`) al diagrama del proyecto.
+4. Inicia simulación y prueba teclas del keypad.
 
-## Criterios generales de evaluación
-- Claridad y coherencia de la propuesta.
-- Viabilidad técnica para el tiempo y alcance definidos.
-- Justificación correcta del lenguaje elegido.
-- Estructura de repositorio limpia.
-- Calidad de documentación de caso de uso y pruebas.
-- Cumplimiento de restricciones de proyecto pequeño.
+## Ejecutar en hardware real (Pico W)
+> Nota: el código original usa `Keypad.h` estilo Arduino. Para hardware real con Pico SDK puro se requiere portar la librería o adaptar escaneo de matriz manual. Este repo **documenta** y conserva la lógica original sin alterarla.
 
-## Ejemplos de posibles temas
-- **Mini Toolkit en ARM64**
-- **Asistente de Estudio en Terminal**
-- **Reporteador de Información del Sistema**
-- **Organizador de Archivos**
-- **Juego de Aprendizaje en Línea de Comandos**
+Flujo sugerido:
+1. Implementar/portar capa `Keypad` compatible con RP2040.
+2. Compilar con toolchain ARM y Pico SDK.
+3. Flashear UF2 al Pico W por USB BOOTSEL.
 
-## Nota importante
-Primero se **documenta y justifica** la idea del proyecto. Después, de forma opcional, se desarrolla un **prototipo pequeño** para validar que la propuesta es viable.
+## Wi-Fi y credenciales
+Este proyecto no usa Wi-Fi en la lógica actual. Si se agrega conectividad después:
+- No subir SSID/contraseñas al repo.
+- Usar archivo local ignorado por git (`secrets.h` o similar).
+- Documentar solo variables y formato, no valores reales.
